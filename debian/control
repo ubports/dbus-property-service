@@ -3,12 +3,12 @@ Section: utils
 Priority: optional
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Build-Depends: debhelper (>= 9)
-Standards-Version: 3.9.4
+Standards-Version: 3.9.5
 
 Package: dbus-property-service
 Architecture: all
 Multi-Arch: foreign
-Depends: libhybris-utils, python3-dbus, python3-gi
+Depends: ${misc:Depends}, debhelper, libhybris-utils, python3-dbus, python3-gi
 Description: allow users to access properties in an android container
  This package contains the dbus service to allow normal users to access
  a few select properties in an Ubuntu Touch android container.
