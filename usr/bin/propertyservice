@@ -1,0 +1,84 @@
+#! /usr/bin/python3
+
+import sys
+import subprocess
+
+import dbus
+import dbus.bus
+import dbus.service
+import dbus.mainloop.glib
+from dbus.exceptions import DBusException
+
+from gi.repository import GObject
+
+valid = ['mtp','adb','rndis','ptp']
+property = "persist.sys.usb.config"
+
+class PropHelper():
+	def Get():
+		cmd = "getprop"
+		pipe = subprocess.check_output([cmd, property])
+		prop = str(pipe, 'ascii').rstrip()
+		return prop
+
+	def Set(name, val):
+		list = PropHelper.Get().split(',')
+		if 'none' in list:
+			list.remove('none')
+		if not val and (name in list):
+			list.remove(name)
+		elif val and not (name in list):
+			if name == 'adb':
+				list.append('adb')
+			else:
+				if 'adb' in list:
+					list = [ name, 'adb']
+				else:
+					list = [ name ]
+		if not list:
+			list = "none"
+		else:
+			list = ','.join(list)
+		cmd = "setprop"
+		pipe = subprocess.check_output([cmd, property, list])
+		return 1
+
+class PropertyService (dbus.service.Object):
+	def __init__ (self, bus, path, name):
+		dbus.service.Object.__init__ (self, bus, path, name)
+
+	@dbus.service.method ("com.canonical.PropertyService", 
+				in_signature='s', out_signature='b')
+	def GetProperty(self, propname):
+		name = propname.lower()
+		retval = 0
+		if name in valid:
+			prop = PropHelper.Get()
+			if name in prop:
+				retval = 1
+			return retval
+		err = "Key %s is unknown (valid: %s)" % (name, valid)
+		raise dbus.DBusException(err)
+
+	@dbus.service.method ("com.canonical.PropertyService", 
+				in_signature='sb', out_signature='b')
+	def SetProperty(self, propname, bool):
+		name = propname.lower()
+		if name in valid:
+			prop = PropHelper.Set(name, bool)
+			return prop
+		err = "Key %s is unknown (valid: %s)" % (name, valid)
+		raise dbus.DBusException(err)
+
+if __name__ == '__main__':
+	dbus.mainloop.glib.DBusGMainLoop (set_as_default=True)
+	bus = dbus.SystemBus ()
+	name = bus.request_name ("com.canonical.PropertyService",
+				dbus.bus.NAME_FLAG_DO_NOT_QUEUE)
+	obj = PropertyService (bus, '/com/canonical/PropertyService',
+				"com.canonical.PropertyService")
+
+	GObject.timeout_add(5000, sys.exit)
+
+	mainloop = GObject.MainLoop()
+	mainloop.run()
