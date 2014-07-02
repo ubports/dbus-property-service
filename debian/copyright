@@ -1,7 +1,7 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: dbus-property-service
 Upstream-Contact:  Oliver Grawert <ogra@ubuntu.com>
-Source: lp:ubuntu/dbus-property-service
+Source: lp:dbus-property-service
 
 Files: *
 Copyright: 2014 Canonical LTD.
