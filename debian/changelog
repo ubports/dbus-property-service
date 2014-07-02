@@ -1,4 +1,4 @@
-dbus-property-service (0.3) UNRELEASED; urgency=medium
+dbus-property-service (0.3) utopic; urgency=medium
 
   * fix upstream branch location in debian/copyright
 
