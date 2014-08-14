@@ -1,4 +1,4 @@
-dbus-property-service (0.4) UNRELEASED; urgency=medium
+dbus-property-service (0.4) utopic; urgency=medium
 
   *  add support for en/disabling ssh via the property service
 
