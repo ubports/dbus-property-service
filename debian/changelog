@@ -1,3 +1,9 @@
+dbus-property-service (0.4) UNRELEASED; urgency=medium
+
+  *  add support for en/disabling ssh via the property service
+
+ -- Oliver Grawert <ogra@ubuntu.com>  Thu, 14 Aug 2014 14:12:27 +0200
+
 dbus-property-service (0.3) utopic; urgency=medium
 
   * fix upstream branch location in debian/copyright

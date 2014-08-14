@@ -11,7 +11,7 @@ from dbus.exceptions import DBusException
 
 from gi.repository import GObject
 
-valid = ['mtp','adb','rndis','ptp']
+valid = ['mtp','adb','rndis','ptp','ssh']
 property = "persist.sys.usb.config"
 
 class PropHelper():
@@ -21,41 +21,60 @@ class PropHelper():
 		prop = str(pipe, 'ascii').rstrip()
 		return prop
 
+	def GetBoolean(property):
+		retval = 0
+		cmd = "getprop"
+		pipe = subprocess.check_output([cmd, property])
+		if str(pipe, 'ascii').rstrip() == 'true':
+			retval = 1
+		return retval
+
 	def Set(name, val):
-		list = PropHelper.Get().split(',')
-		if 'none' in list:
-			list.remove('none')
-		if not val and (name in list):
-			list.remove(name)
-		elif val and not (name in list):
-			if name == 'adb':
-				list.append('adb')
-			else:
-				if 'adb' in list:
-					list = [ name, 'adb']
-				else:
-					list = [ name ]
-		if not list:
-			list = "none"
+		if name == 'ssh':
+			setval = 'true'
+			property = 'persist.service.ssh'
+			if not val:
+				setval = 'false'
 		else:
-			list = ','.join(list)
+			property = "persist.sys.usb.config"
+			list = PropHelper.Get().split(',')
+			if 'none' in list:
+				list.remove('none')
+			if not val and (name in list):
+				list.remove(name)
+			elif val and not (name in list):
+				if name == 'adb':
+					list.append('adb')
+				else:
+					if 'adb' in list:
+						list = [ name, 'adb']
+					else:
+						list = [ name ]
+			if not list:
+				list = "none"
+			else:
+				list = ','.join(list)
+			setval = list
 		cmd = "setprop"
-		pipe = subprocess.check_output([cmd, property, list])
+		pipe = subprocess.check_output([cmd, property, setval])
 		return 1
 
 class PropertyService (dbus.service.Object):
 	def __init__ (self, bus, path, name):
 		dbus.service.Object.__init__ (self, bus, path, name)
 
-	@dbus.service.method ("com.canonical.PropertyService", 
+	@dbus.service.method ("com.canonical.PropertyService",
 				in_signature='s', out_signature='b')
 	def GetProperty(self, propname):
 		name = propname.lower()
 		retval = 0
 		if name in valid:
-			prop = PropHelper.Get()
-			if name in prop:
-				retval = 1
+			if name == 'ssh':
+				retval = PropHelper.GetBoolean('persist.service.ssh')
+			else:
+				prop = PropHelper.Get()
+				if name in prop:
+					retval = 1
 			return retval
 		err = "Key %s is unknown (valid: %s)" % (name, valid)
 		raise dbus.DBusException(err)
