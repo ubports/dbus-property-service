@@ -1,8 +1,44 @@
-dbus-property-service (0.5+ubports) xenial; urgency=medium
+dbus-property-service (0.9) xenial; urgency=medium
 
-  * Imported to UBports
+  * Clear out the DemoEdgesCompleted field when enabling demo edges.
 
- -- UBports auto importer <infra@ubports.com>  Mon, 05 Mar 2018 18:16:25 +0100
+ -- Michael Terry <mterry@ubuntu.com>  Fri, 02 Oct 2015 10:09:07 -0400
+
+dbus-property-service (0.8build1) wily; urgency=medium
+
+  * No-change rebuild for python3.5 transition
+
+ -- Steve Langasek <steve.langasek@ubuntu.com>  Wed, 22 Jul 2015 06:32:08 +0000
+
+dbus-property-service (0.8) wily; urgency=medium
+
+  * click.rules: remove no longer used and overly complicated fakeenv rules
+    (LP: #1464341)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Fri, 12 Jun 2015 09:54:36 -0500
+
+dbus-property-service (0.7) utopic; urgency=medium
+
+  * ship apparmor click.rules so the autopilot-touch package does not need to
+    be seeded anymore (this is a temporary solution to not break tests until
+    everything was switched to adt-run)
+
+ -- Oliver Grawert <ogra@ubuntu.com>  Tue, 21 Oct 2014 17:28:13 +0200
+
+dbus-property-service (0.6) 14.09; urgency=medium
+
+  * add support for en/disabling the edges intro, so phablet-config can use it
+    (LP: #1365725)
+  * improve indendation and fix all pep8 issues
+
+ -- Oliver Grawert <ogra@ubuntu.com>  Mon, 22 Sep 2014 12:21:55 +0200
+
+dbus-property-service (0.5) 14.09; urgency=medium
+
+  * add support for the phablet-config "writable-image" and "autopilot"
+    options via dbus
+
+ -- Oliver Grawert <ogra@ubuntu.com>  Fri, 22 Aug 2014 12:24:54 +0200
 
 dbus-property-service (0.4) utopic; urgency=medium
 
