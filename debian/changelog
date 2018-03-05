@@ -1,3 +1,9 @@
+dbus-property-service (0.5+ubports) xenial; urgency=medium
+
+  * Imported to UBports
+
+ -- UBports auto importer <infra@ubports.com>  Mon, 05 Mar 2018 18:16:25 +0100
+
 dbus-property-service (0.4) utopic; urgency=medium
 
   *  add support for en/disabling ssh via the property service
