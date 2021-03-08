@@ -22,22 +22,19 @@ class PropHelper():
         prop = str(pipe, 'ascii').rstrip()
         return prop
 
-    def GetBoolean(property):
+    def GetServiceStatus(service_name):
         retval = 0
-        cmd = "getprop"
-        pipe = subprocess.check_output([cmd, property])
-        if str(pipe, 'ascii').rstrip() == 'true':
+        pipe = subprocess.check_output(["/sbin/status", service_name])
+        if 'running' in str(pipe, 'ascii'):
             retval = 1
         return retval
 
     def Set(name, val):
         cmd = "setprop"
         if name == 'ssh':
-            setval = 'true'
-            property = 'persist.service.ssh'
-            if not val:
-                setval = 'false'
-            pipe = subprocess.check_output([cmd, property, setval])
+            action = 'start' if val else 'stop'
+            cmd = '/sbin/' + action
+            subprocess.run([cmd, name])
         elif name == 'autopilot':
             cmd = 'aa-clickhook -f'
             command = "%s" % cmd
@@ -116,7 +113,7 @@ class PropertyService (dbus.service.Object):
         rval = 0
         if name in valid:
             if name == 'ssh':
-                rval = PropHelper.GetBoolean('persist.service.ssh')
+                rval = PropHelper.GetServiceStatus(name)
             else:
                 prop = PropHelper.Get()
                 if name in prop:
